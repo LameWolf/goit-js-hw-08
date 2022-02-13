@@ -27,7 +27,7 @@ const sendMessage = evt => {
     alert('Заполните пожалуйста все поля!!!');
   } else {
     evt.currentTarget.reset();
-    // localStorage.removeItem(LOCALSTORAGE_KEY); ???
+    localStorage.removeItem(LOCALSTORAGE_KEY);
     console.log(data);
   }
 };
