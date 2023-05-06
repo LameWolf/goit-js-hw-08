@@ -9,42 +9,41 @@ const refs = {
 const LOCALSTORAGE_KEY = 'feedback-form-state';
 const getSavedData = localStorage.getItem(LOCALSTORAGE_KEY);
 
-const data = {
-  email: '',
-  message: '',
-};
+const onFormInput = () => {
+  const data = {
+    email: refs.email.value,
+    message: refs.message.value,
+  };
 
-const checkSavedData = () => {
-  const savedData = JSON.parse(getSavedData);
-  if (savedData) {
-    data = savedData;
-    refs.email.value = savedData.email || '';
-    refs.message.value = savedData.message || '';
-  }
-};
-
-checkSavedData();
-
-const updateFormData = () => {
   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
 };
 
-const onFormInput = evt => {
-  data[evt.target.name] = evt.target.value;
-  updateFormData();
-};
+const restoreFormState = () => {
+  const feedbackState = JSON.parse(getSavedData);
 
-const sendMessage = evt => {
-  evt.preventDefault();
-
-  if (refs.email.value === '' || refs.message.value.trim() === '') {
-    alert('Заповніть будь-ласка всі поля!!!');
-  } else {
-    evt.currentTarget.reset();
-    localStorage.removeItem(LOCALSTORAGE_KEY);
-    console.log(data);
+  if (feedbackState) {
+    refs.email.value = feedbackState.email || '';
+    refs.message.value = feedbackState.message || '';
   }
 };
 
-refs.form.addEventListener('submit', sendMessage);
+restoreFormState();
+
+const clearFormState = () => {
+  refs.email.value = '';
+  refs.message.value = '';
+  localStorage.removeItem(LOCALSTORAGE_KEY);
+};
+
+const onFormSubmit = evt => {
+  evt.preventDefault();
+  const data = {
+    email: refs.email.value,
+    message: refs.message.value,
+  };
+  console.log(data);
+  clearFormState();
+};
+
+refs.form.addEventListener('submit', onFormSubmit);
 refs.form.addEventListener('input', throttle(onFormInput, 500));
