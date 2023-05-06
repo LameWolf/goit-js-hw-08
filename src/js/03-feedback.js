@@ -14,9 +14,24 @@ const data = {
   message: '',
 };
 
+const checkSavedData = () => {
+  const savedData = JSON.parse(getSavedData);
+  if (savedData) {
+    data = savedData;
+    refs.email.value = savedData.email || '';
+    refs.message.value = savedData.message || '';
+  }
+};
+
+checkSavedData();
+
+const updateFormData = () => {
+  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
+};
+
 const onFormInput = evt => {
   data[evt.target.name] = evt.target.value;
-  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
+  updateFormData();
 };
 
 const sendMessage = evt => {
@@ -30,16 +45,6 @@ const sendMessage = evt => {
     console.log(data);
   }
 };
-
-const checkSavedData = () => {
-  const parseData = JSON.parse(getSavedData);
-  if (parseData) {
-    refs.email.value = parseData.email || '';
-    refs.message.value = parseData.message || '';
-  }
-};
-
-checkSavedData();
 
 refs.form.addEventListener('submit', sendMessage);
 refs.form.addEventListener('input', throttle(onFormInput, 500));
